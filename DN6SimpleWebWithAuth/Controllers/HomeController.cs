@@ -1,4 +1,5 @@
 ﻿using DN6SimpleWebWithAuth.Models;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,10 +8,12 @@ namespace DN6SimpleWebWithAuth.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly TelemetryClient _telemetryClient;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, TelemetryClient telemetryClient)
         {
             _logger = logger;
+            _telemetryClient = telemetryClient;
         }
 
         public IActionResult Index()
@@ -20,6 +23,20 @@ namespace DN6SimpleWebWithAuth.Controllers
 
         public IActionResult Privacy()
         {
+            return View();
+        }
+
+        public IActionResult DemoLiveInsights()
+        {
+            _telemetryClient.TrackEvent("EventTracked: Demo Live Insights Viewed");
+            try
+            {
+                throw new Exception("All exceptions can be easily tracked!");
+            }
+            catch (Exception ex)
+            {
+                _telemetryClient.TrackException(ex);
+            }
             return View();
         }
 
