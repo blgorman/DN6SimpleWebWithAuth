@@ -15,10 +15,16 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 builder.Services.AddControllersWithViews();
 builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
 
-/* NOTE: To enable the use of AppConfiguration and Keyvault integration, uncomment the following code:
- * Additional NOTE: If using KeyVault, ensure access policies and identities at Azure, and uncomment Keyvault code
- *                  You will also need to remove the `); from the connect line to chain the command
- * Final Note: Ensure you add NuGet packages for Azure.Identity and Microsoft.Extensions.Configuration.AzureAppConfiguration
+/* NOTE: To enable the use of AppConfiguration and Keyvault integration, uncomment the following code,
+ *          and ENSURE you have a system managed identity for both app services at Azure,
+ *          then also add all of the app service and slots to the App Configuration with Configuration Data Reader Role
+ * Additional NOTE: If using KeyVault, ensure additional identity on Azure App Config, and then ensure all of the identities can get keyvault secret
+ *                      through access policies on your keyvault for Get Secret for App Config, App Service, and all App Service Slots.
+ *                  ,Then uncomment Keyvault code
+ *                  You will also need to remove the `); from the connect line to chain the command, and push.
+ *                  also note that your devs will also need access to keyvault get secret in order to work with this locally through default credential
+ * Final Note: For the code to work, ensure you add NuGet packages for Azure.Identity and Microsoft.Extensions.Configuration.AzureAppConfiguration
+
 builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
 {
     var settings = config.Build();
