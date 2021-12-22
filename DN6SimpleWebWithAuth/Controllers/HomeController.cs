@@ -9,15 +9,23 @@ namespace DN6SimpleWebWithAuth.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly TelemetryClient _telemetryClient;
+        private readonly IConfiguration _configuration;
 
-        public HomeController(ILogger<HomeController> logger, TelemetryClient telemetryClient)
+        public HomeController(ILogger<HomeController> logger, TelemetryClient telemetryClient, IConfiguration configuration)
         {
             _logger = logger;
             _telemetryClient = telemetryClient;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
         {
+            var simpleValue = _configuration["SimpleWebShared:MySimpleValue"] ?? "simpleValue is not set or accessible";
+            var secretValue = _configuration["SimpleWebShared:MySecretValue"] ?? "secretValue is not set or accessible";
+            ViewData["mysimplevalue"] = simpleValue;
+            ViewData["mysecretvalue"] = secretValue;
+            _telemetryClient.TrackTrace($"simpleValue in ViewData: {ViewData["mysimplevalue"]}");
+            _telemetryClient.TrackTrace($"secretValue in ViewData: {ViewData["mysecretvalue"]}");
             return View();
         }
 

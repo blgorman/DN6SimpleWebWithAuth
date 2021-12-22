@@ -15,6 +15,31 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 builder.Services.AddControllersWithViews();
 builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
 
+/* NOTE: To enable the use of AppConfiguration and Keyvault integration, uncomment the following code:
+ * Additional NOTE: If using KeyVault, ensure access policies and identities at Azure, and uncomment Keyvault code
+ *                  You will also need to remove the `); from the connect line to chain the command
+ * Final Note: Ensure you add NuGet packages for Azure.Identity and Microsoft.Extensions.Configuration.AzureAppConfiguration
+builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
+{
+    var settings = config.Build();
+    var env = settings["Application:Environment"];
+    if (env == null || !env.Trim().Equals("develop", StringComparison.OrdinalIgnoreCase))
+    {
+        //var cred = new ManagedIdentityCredential();
+        config.AddAzureAppConfiguration(options =>
+                options.Connect(new Uri(settings["AzureAppConfigConnection"]), cred));
+                            //.ConfigureKeyVault(kv => { kv.SetCredential(cred); }));
+    }
+    else
+    {
+        //var cred = new DefaultAzureCredential();
+        config.AddAzureAppConfiguration(options =>
+            options.Connect(settings["AzureAppConfigConnection"]));
+                   //.ConfigureKeyVault(kv => kv.SetCredential(cred)));
+    }
+});
+*/
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
