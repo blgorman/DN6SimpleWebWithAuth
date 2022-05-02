@@ -1,3 +1,4 @@
+using Azure.Identity;
 using DN6SimpleWebWithAuth.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,27 +25,27 @@ builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPINSIG
  *                  You will also need to remove the `); from the connect line to chain the command, and push.
  *                  also note that your devs will also need access to keyvault get secret in order to work with this locally through default credential
  * Final Note: For the code to work, ensure you add NuGet packages for Azure.Identity and Microsoft.Extensions.Configuration.AzureAppConfiguration
-
+*/
 builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
 {
     var settings = config.Build();
     var env = settings["Application:Environment"];
     if (env == null || !env.Trim().Equals("develop", StringComparison.OrdinalIgnoreCase))
     {
-        //var cred = new ManagedIdentityCredential();
+        var cred = new ManagedIdentityCredential();
         config.AddAzureAppConfiguration(options =>
                 options.Connect(new Uri(settings["AzureAppConfigConnection"]), cred));
                             //.ConfigureKeyVault(kv => { kv.SetCredential(cred); }));
     }
     else
     {
-        //var cred = new DefaultAzureCredential();
+        var cred = new DefaultAzureCredential();
         config.AddAzureAppConfiguration(options =>
             options.Connect(settings["AzureAppConfigConnection"]));
                    //.ConfigureKeyVault(kv => kv.SetCredential(cred)));
     }
 });
-*/
+
 
 var app = builder.Build();
 
