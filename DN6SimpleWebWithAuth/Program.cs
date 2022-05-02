@@ -25,7 +25,7 @@ builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPINSIG
  *                  You will also need to remove the `); from the connect line to chain the command, and push.
  *                  also note that your devs will also need access to keyvault get secret in order to work with this locally through default credential
  * Final Note: For the code to work, ensure you add NuGet packages for Azure.Identity and Microsoft.Extensions.Configuration.AzureAppConfiguration
-*/
+
 builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
 {
     var settings = config.Build();
@@ -45,7 +45,7 @@ builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
                    //.ConfigureKeyVault(kv => kv.SetCredential(cred)));
     }
 });
-
+*/
 
 var app = builder.Build();
 
