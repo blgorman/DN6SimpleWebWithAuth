@@ -30,6 +30,46 @@ using (var context = new ApplicationDbContext(contextOptions))
 */
 
 /* 
+*************************** 
+Redis Cache Integration
+***************************
+*/
+//Uncomment this section to integrate with Redis Cache
+/*
+string redisCNSTR = string.Empty;
+var env = builder.Configuration["Application:Environment"];
+
+if (string.IsNullOrWhiteSpace(env) || !env.Equals("develop", StringComparison.OrdinalIgnoreCase))
+{
+    redisCNSTR = builder.Configuration["REDIS_CONNECTION_STRING"];
+}
+else
+{
+    var redisSection = builder.Configuration.GetSection("Redis");
+    redisCNSTR = redisSection.GetValue<string>("ConnectionString").ToString();
+    var redisInstanceName = redisSection.GetValue<string>("InstanceName");
+}
+
+//Turn this on to use session data in Redis and avoid using cookies for logins
+////session
+//builder.Services.AddSession(o =>
+//{
+//    o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+//    o.Cookie.Name = "DemoRedis.Session";
+//    o.Cookie.HttpOnly = true;
+//});
+
+//builder.Services.AddStackExchangeRedisCache(options =>
+//{
+//    options.Configuration = builder.Configuration.GetConnectionString(redisCNSTR);
+//    options.InstanceName = redisInstanceName;
+//});
+
+//Direct access to the cache
+builder.Services.AddSingleton(async x => await RedisConnection.InitializeAsync(connectionString: redisCNSTR));
+*/
+
+/* 
  * App Configuration and KeyVault integration: 
  *      To enable the use of AppConfiguration and Keyvault integration, uncomment the following code, using the version of credential without the keyvalt configured
  *      - ENSURE you have a system managed identity for your App Service(s)
