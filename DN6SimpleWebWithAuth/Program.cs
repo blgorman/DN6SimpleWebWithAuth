@@ -90,6 +90,7 @@ builder.Services.AddSingleton(async x => await RedisConnection.InitializeAsync(c
  * Final Note: For the code to work, ensure you have NuGet packages for Azure.Identity and Microsoft.Extensions.Configuration.AzureAppConfiguration (they are already added to this project)
  *
 */
+
 /*
 builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
 {
@@ -100,22 +101,22 @@ builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
         var cred = new ManagedIdentityCredential();
         config.AddAzureAppConfiguration(options =>
                 options.Connect(new Uri(settings["AzureAppConfigConnection"]), cred));
-        /*
-        config.AddAzureAppConfiguration(options =>
-                options.Connect(new Uri(settings["AzureAppConfigConnection"]), cred)
-                            .ConfigureKeyVault(kv => { kv.SetCredential(cred); }));
-        */
+
+        //config.AddAzureAppConfiguration(options =>
+        //    options.Connect(settings["AzureAppConfigConnection"])
+        //                    .ConfigureKeyVault(kv => { kv.SetCredential(cred); }));                                  
+        
     }
     else
     {
         var cred = new DefaultAzureCredential();
         config.AddAzureAppConfiguration(options =>
             options.Connect(settings["AzureAppConfigConnection"]));
-        /*
-        config.AddAzureAppConfiguration(options =>
-            options.Connect(settings["AzureAppConfigConnection"])
-                            .ConfigureKeyVault(kv => { kv.SetCredential(cred); }));
-        */
+        
+        //config.AddAzureAppConfiguration(options =>
+        //    options.Connect(settings["AzureAppConfigConnection"])
+        //                    .ConfigureKeyVault(kv => { kv.SetCredential(cred); }));
+        
     }
 });
 */
