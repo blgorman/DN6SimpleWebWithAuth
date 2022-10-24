@@ -4,8 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId></UserSecretsId>
-    <ApplicationInsightsResourceId></ApplicationInsightsResourceId>
+    <UserSecretsId>your-secrets-id-some-guid-asdf</UserSecretsId>
+    <ApplicationInsightsResourceId>/subscriptions/yoursubscription/resourcegroups/your-resource-group/providers/Microsoft.Insights/components/your-appname</ApplicationInsightsResourceId>
   </PropertyGroup>
 
   <ItemGroup>
