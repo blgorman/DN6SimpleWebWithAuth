@@ -103,7 +103,7 @@ builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
                 options.Connect(new Uri(settings["AzureAppConfigConnection"]), cred));
 
         //config.AddAzureAppConfiguration(options =>
-        //    options.Connect(settings["AzureAppConfigConnection"])
+        //    options.Connect(new Uri(settings["AzureAppConfigConnection"]), cred)
         //                    .ConfigureKeyVault(kv => { kv.SetCredential(cred); }));                                  
         
     }
