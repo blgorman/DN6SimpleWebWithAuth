@@ -40,6 +40,17 @@ builder.Services.AddAntiforgery(options =>
     options.SuppressXFrameOptionsHeader = false;
 });
 
+// .NET 8 Output Caching for better performance
+builder.Services.AddOutputCache(options =>
+{
+    options.AddBasePolicy(builder => builder.Expire(TimeSpan.FromMinutes(10)));
+    options.AddPolicy("StaticContent", builder => 
+        builder.Expire(TimeSpan.FromHours(1)).Tag("static"));
+});
+
+// Add response caching
+builder.Services.AddResponseCaching();
+
 builder.Services.AddControllersWithViews(options =>
 {
     // Add global filters for better security
@@ -181,6 +192,13 @@ app.Use(async (context, next) =>
 });
 
 app.UseHttpsRedirection();
+
+// Add output caching middleware
+app.UseOutputCache();
+
+// Add response caching middleware  
+app.UseResponseCaching();
+
 app.UseStaticFiles();
 
 app.UseRouting();
