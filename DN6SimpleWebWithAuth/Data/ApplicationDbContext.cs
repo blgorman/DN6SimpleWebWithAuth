@@ -6,7 +6,7 @@ namespace DN6SimpleWebWithAuth.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
-        public DbSet<State> States { get; set; }
+        public DbSet<State> States { get; set; } = null!;
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
