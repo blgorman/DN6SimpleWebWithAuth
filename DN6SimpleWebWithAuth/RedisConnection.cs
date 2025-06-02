@@ -23,8 +23,8 @@ namespace DN6SimpleWebWithAuth
 
         private SemaphoreSlim _reconnectSemaphore = new SemaphoreSlim(initialCount: 1, maxCount: 1);
         private readonly string _connectionString;
-        private ConnectionMultiplexer _connection;
-        private IDatabase _database;
+        private ConnectionMultiplexer _connection = null!;
+        private IDatabase _database = null!;
 
         private RedisConnection(string connectionString)
         {
@@ -153,7 +153,7 @@ namespace DN6SimpleWebWithAuth
                     // Ignore any errors from the oldConnection
                 }
 
-                Interlocked.Exchange(ref _connection, null);
+                Interlocked.Exchange(ref _connection, null!);
                 ConnectionMultiplexer newConnection = await ConnectionMultiplexer.ConnectAsync(_connectionString);
                 Interlocked.Exchange(ref _connection, newConnection);
 

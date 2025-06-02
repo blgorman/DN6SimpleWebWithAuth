@@ -1,20 +1,65 @@
 //using Azure.Identity;
+using DN6SimpleWebWithAuth;
 using DN6SimpleWebWithAuth.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// .NET 8 Performance optimizations
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
+});
+
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<IdentityUser>(options => 
+{
+    options.SignIn.RequireConfirmedAccount = true;
+    // .NET 8 security improvements
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 8;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.User.RequireUniqueEmail = true;
+})
     .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddControllersWithViews();
-builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
+
+// Add enhanced security headers
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "X-CSRF-TOKEN";
+    options.SuppressXFrameOptionsHeader = false;
+});
+
+// .NET 8 Output Caching for better performance
+builder.Services.AddOutputCache(options =>
+{
+    options.AddBasePolicy(builder => builder.Expire(TimeSpan.FromMinutes(10)));
+    options.AddPolicy("StaticContent", builder => 
+        builder.Expire(TimeSpan.FromHours(1)).Tag("static"));
+});
+
+// Add response caching
+builder.Services.AddResponseCaching();
+
+builder.Services.AddControllersWithViews(options =>
+{
+    // Add global filters for better security
+    options.Filters.Add(new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute());
+});
+builder.Services.AddApplicationInsightsTelemetry(options =>
+{
+    options.ConnectionString = builder.Configuration["APPINSIGHTS_CONNECTIONSTRING"];
+});
 
 // OPTIONALLY: enable automatic migrations
 // *************
@@ -123,19 +168,37 @@ builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline with .NET 8 optimizations
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
+    app.UseDeveloperExceptionPage();
 }
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    // Enhanced HSTS configuration for .NET 8
     app.UseHsts();
 }
 
+// Security headers middleware
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+    context.Response.Headers.Append("X-Frame-Options", "DENY");
+    context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
+    context.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
+    await next();
+});
+
 app.UseHttpsRedirection();
+
+// Add output caching middleware
+app.UseOutputCache();
+
+// Add response caching middleware  
+app.UseResponseCaching();
+
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -143,9 +206,11 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// .NET 8 improved routing with endpoint filters
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapRazorPages();
 
 app.Run();

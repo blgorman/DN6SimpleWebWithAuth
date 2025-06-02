@@ -1,6 +1,7 @@
-﻿using DN6SimpleWebWithAuth.Models;
+using DN6SimpleWebWithAuth.Models;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using System.Diagnostics;
 
 namespace DN6SimpleWebWithAuth.Controllers
@@ -29,6 +30,7 @@ namespace DN6SimpleWebWithAuth.Controllers
             return View();
         }
 
+        [OutputCache(Duration = 300)] // Cache for 5 minutes
         public IActionResult Privacy()
         {
             return View();

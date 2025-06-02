@@ -1,6 +1,17 @@
-# DN6 Simple Web with Auth and Insights
+# DN8 Simple Web with Auth and Insights
 
-This is a simple template with Auth and Insights for DotNet 6 MVC.  I've also added app configuration and code to integrate Azure App Config and Azure Key Vault.  If you try to use those, make sure to read all the notes in the Program.cs file.  It would also help if you've seen the video from the Opsgility Azure A-Z conference.
+This is a simple template with Auth and Insights for DotNet 8 MVC. This project has been upgraded from .NET 6 to .NET 8 with performance and security optimizations. I've also added app configuration and code to integrate Azure App Config and Azure Key Vault. If you try to use those, make sure to read all the notes in the Program.cs file. It would also help if you've seen the video from the Opsgility Azure A-Z conference.
+
+## .NET 8 Features and Optimizations
+
+This project includes the following .NET 8 improvements:
+
+- **System.Text.Json Source Generation**: Improved JSON serialization performance with compile-time generation
+- **Enhanced Security**: Updated password policies, anti-forgery tokens, and security headers
+- **Performance Optimizations**: HTTP JSON configuration with source-generated serializers
+- **Latest Package Versions**: All NuGet packages updated to their latest .NET 8 compatible versions
+- **Improved Error Handling**: Better null-safety with nullable reference types
+- **Security Headers**: Added security headers middleware for better protection
 
 ## Use at your own risk
 

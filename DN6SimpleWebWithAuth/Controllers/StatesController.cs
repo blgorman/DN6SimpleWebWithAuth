@@ -1,33 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using DN6SimpleWebWithAuth.Data;
-using DN6SimpleWebWithAuth.Models;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using DN6SimpleWebWithAuth.Data;
-using DN6SimpleWebWithAuth.Models;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Text.Json;
+using DN6SimpleWebWithAuth.Data;
+using DN6SimpleWebWithAuth.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace DN6SimpleWebWithAuth.Controllers
 {
+    [Authorize] // Require authentication for States controller
     public class StatesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -38,6 +23,7 @@ namespace DN6SimpleWebWithAuth.Controllers
         }
 
         // GET: States
+        [OutputCache(Duration = 600)] // Cache for 10 minutes
         public async Task<IActionResult> Index()
         {
             return _context.States != null ?
@@ -46,6 +32,7 @@ namespace DN6SimpleWebWithAuth.Controllers
         }
 
         // GET: States/Details/5
+        [OutputCache(Duration = 300)] // Cache for 5 minutes
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.States == null)
